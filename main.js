@@ -38,7 +38,7 @@ $('body').terminal(
     }
 },
 {
-    greetings: 'Terminal UI - Hack NOSA :: Type \'help\' to show options\n'+ASCII_TEXT
+    greetings: 'Terminal UI - Hack TTS NASA :: Type \'help\' to show options\n'+ASCII_TEXT
 });
 
 function saysomething(name) {
