@@ -35,10 +35,13 @@ $('body').terminal(
     },
     phone: function (phoneNumber) {
         this.echo(phoneAPI(phoneNumber));
+    },
+    alexa: function () {
+        this.echo(foaas());
     }
 },
 {
-    greetings: 'Terminal UI - Hack TTS NASA :: Type \'help\' to show options\n'+ASCII_TEXT+speakText("Welceome to Terminal U.I.")
+    greetings: 'Terminal UI - Hack TTS NASA :: Type \'help\' to show options\n'+ASCII_TEXT+speakText("Welcome to Terminal U.I")
 });
 
 function saysomething(name) {
@@ -49,12 +52,8 @@ function saysomething(name) {
 async function fetchAdviceAPI() {
     let url = "https://api.adviceslip.com/advice";
     let response = await fetch(url);
-    // console.log(response)
     let data = await response.text();
-    // console.log(data);
     parsed_response = JSON.parse(data);
-    // console.log(parsed_response);
-    // console.log(parsed_response.slip.advice);
     return parsed_response.slip.advice
 }
 
@@ -100,6 +99,19 @@ async function phoneAPI(phone_no) {
     return "Invalid phone number"    
 }
 
+async function foaas() {
+    const url_array = ['zero', 'asshole', 'awesome', 'bag', 'bucket', 'bye', 'cool', 'cup', 'dense', 'diabetes', 'dumbledore', 'even', 'everyone', 'everything', 'everything', 'family', 'fascinating', 'flying', 'ftfy', 'fyyff', 'give', 'holygrail', 'horse', 'idea', 'immensity', 'jinglebells', 'life', 'logs', 'looking', 'lowpoly', 'maybe', 'me', 'mornin', 'no', 'pink', 'question', 'ratsarse', 'retard', 'ridiculous', 'rtfm', 'sake', 'shit', 'single', 'thanks', 'that', 'this', 'too', 'tucker', 'what', 'yeah', 'zayn', ''];
+    var random_url = url_array[Math.floor(Math.random()*url_array.length)];
+    url = "https://foaas.com/"+random_url+"/sharma";
+    let response = await fetch(url, { headers: new Headers({'Accept': 'application/json'})});
+    let data = await response.text();
+    console.log(data)
+    parsed_response = JSON.parse(data);
+    console.log(response)
+    speakText(parsed_response.message)
+    return parsed_response.message
+}
+
 function getSelectionText() {
     var text = "";
     if (window.getSelection) {
@@ -110,6 +122,9 @@ function getSelectionText() {
     }
     return text;
 }
+
+
+
 $(document).ready(function (){ // when the document has completed loading
    $(document).mouseup(function (e){ // attach the mouseup event for all div and pre tags
       setTimeout(function() { // When clicking on a highlighted area, the value stays highlighted until after the mouseup event, and would therefore stil be captured by getSelection. This micro-timeout solves the issue. 
