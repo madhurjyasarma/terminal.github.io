@@ -38,10 +38,11 @@ $('body').terminal(
     }
 },
 {
-    greetings: 'Terminal UI - Hack TTS NASA :: Type \'help\' to show options\n'+ASCII_TEXT
+    greetings: 'Terminal UI - Hack TTS NASA :: Type \'help\' to show options\n'+ASCII_TEXT+speakText("Welceome to Terminal U.I.")
 });
 
 function saysomething(name) {
+    speakText('Hieee ' +name+ '.Welocoome from say something.')
     return 'Hieee ' +name+ '..Weocooooooooooooomeeeeeeeeeeeeeeeee from saysomething.';
 }
 
@@ -117,3 +118,9 @@ $(document).ready(function (){ // when the document has completed loading
       }, 1);
    });
 });
+
+function speakText(text) {
+    responsiveVoice.speak(text);
+    return "";
+}
+
