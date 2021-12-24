@@ -15,7 +15,8 @@ const HELP =
     +"phone <country code><phone number>:: to get details of your number\n"
     +"alexa                             :: chat with alexa\n"
     +"whatsmyip                         :: to get details of your ip\n"
-    +"gender                            :: to know your gender"
+    +"gender                            :: to know your gender\n"
+    +"ls, cd, cat                       :: directory access\n"
 
 // Fake in memory filesystem
 var fs = {
@@ -130,6 +131,7 @@ var commands = {
         }
     } 
 };
+
 function completion(string, callback) {
     var command = this.get_command();
     var cmd = $.terminal.parse_command(command);
@@ -173,8 +175,6 @@ function completion(string, callback) {
 }
 
 
-
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -208,10 +208,9 @@ $('body').terminal(
     whatsmyip : function () {
         this.echo(whatsmyIP());
     },
-    gender : function () {
-        this.echo(gender());
+    gender : function (name) {
+        this.echo(gender(name));
     },
-
     cd: function(dir) {
         this.pause();
         if (dir === '/') {
@@ -260,7 +259,7 @@ $('body').terminal(
 {
     completion: completion,
     name: 'Terminal Jarvis v0.1',
-    prompt: 'user@jarvis-v1.0: ',
+    prompt: prompt(),
     greetings: 'Terminal Jarvis v0.1 - :: Type \'help\' to show options\n'+ASCII_TEXT+showHelp(),
 });
 
@@ -387,20 +386,25 @@ function speakText(text) {
 }
 
 
-async function gender(name1) {
-    console.log(name1);
-    let url = "https://api.genderize.io/?name=" + name1;
+async function gender(name) {
+    let url = "https://api.genderize.io/?name="+name;
     let response = await fetch(url);
-    console.log(response);
     let data = await response.text();
-    console.log(data);
-    parsed_response = JSON.parse(data);
-    console.log(parsed_response);
-    
+    parsed_response = JSON.parse(data);  
     let gender_name = parsed_response.name;
     let gender_id = parsed_response.gender;
     let probability = parsed_response.probability;
-    return gender_name +"\n"+gender_id+"\n"+probability;
-    
+    if(gender_id === null) {
+        return "We dont have any record for this name"
+    }
+    return gender_name +" is a "+gender_id+" name with "+probability*100+"% probaility";   
+}
 
+function prompt() {
+    return function(callback) {
+        var prompt;
+        prompt = 'user@host:~' + path.join('/') + '$ ';
+        $('.title').html(prompt);
+        callback(prompt);
+    };
 }
