@@ -18,11 +18,12 @@ $('body').terminal(
     help: function () {
         this.echo(
           'help                             :: to show this menu\n'
-        +'iam <your name>                  :: for greeting\n'
-        +'developer                        :: to know the Anonymous\n'
+        +'iam <your name>                   :: for greeting\n'
+        +'developer                         :: to know the Anonymous\n'
         +'advice                            :: to get a free advice\n'
         +"weather <city name>               :: check your city's weather\n"
-        +"phone <country code><phone number>:: to get details of your number\n");
+        +"phone <country code><phone number>:: to get details of your number\n")
+        +"Alexa                             :: To access mean Alexa\n";
     },
     hie: function (name) {
         this.echo(saysomething(name));
