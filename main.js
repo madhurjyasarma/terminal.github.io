@@ -18,6 +18,9 @@ const HELP =
     +"gender                            :: to know your gender\n"
     +"ls, cd, cat                       :: directory access\n"
 
+
+var term;
+
 // Fake in memory filesystem
 var fs = {
     'projects': {
@@ -129,8 +132,9 @@ var commands = {
         } else {
             this.echo(cwd[file]);
         }
-    } 
+    }
 };
+
 
 function completion(string, callback) {
     var command = this.get_command();
