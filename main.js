@@ -140,15 +140,15 @@ var commands = {
 function playAudio() {
     console.log("playing audio")
     const audio_list = [
-                        "./salamisound-1772817-elma-4-short.mp3",
-                        "./salamisound-2806608-elma-9-electromechanical.mp3",
-                        "./salamisound-3322341-elma-7-electromechanical.mp3",
-                        "./salamisound-5643712-elma-5-electro-mechanical.mp3",
-                        "./salamisound-6796298-elma-3-electro-mechanical.mp3"
+                        "assets/1772817.mp3",
+                        "assets/2806608.mp3",
+                        "assets/3322341.mp3",
+                        "assets/5643712.mp3",
+                        "assets/6796298.mp3"
                     ]
     var random_audio = audio_list[Math.floor(Math.random()*audio_list.length)];
     var audio = new Audio(random_audio);
-    console.log("playing audio :: "+audio)
+    console.log("playing audio :: "+random_audio)
     audio.play();
 }
 
