@@ -15,12 +15,13 @@ const HELP =
     +"phone <country code><phone number>:: to get details of your number\n"
     +"alexa                             :: chat with alexa\n"
     +"whatsmyip                         :: to get details of your ip\n"
+    +"gender                            :: to know your gender"
 
 // Fake in memory filesystem
 var fs = {
     'projects': {
         'baz.txt': 'Hello this is file baz.txt',
-        'quake.txt': "Cras sit amet semper arcu. Donec est nunc, dapibus non scelerisque quis, pellentesque at justo. Nunc nec vehicula ante, at dapibus orci. In ultricies rutrum ante, dictum placerat lorem faucibus vitae. Aliquam porttitor at mauris id semper. Integer rutrum sem id nunc congue congue. Etiam dignissim diam in dui ultrices, a venenatis velit ultricies. Maecenas ac ultrices mi. Nunc molestie sapien vitae massa vulputate iaculis. Phasellus vehicula laoreet mi, vel bibendum nisl laoreet sit amet. Fusce sit amet rutrum lacus.",
+        'assamese.txt': " গোটেই নগৰখনৰ মানুহে এতিয়াৰ পৰাহে যেন শান্তিৰে উশাহ ল'লে। সেই দিনাখনৰ পৰা ডাঙৰ নগৰখনৰ মানুহবোৰক প্ৰতি ৰাতিপুৱা এটাকৈহে সাধু কোৱা হ'ল। নিশা মানুহবোৰে শুবলৈ যোৱাৰ আগত এটাকৈহে সাধু শুনিবলৈ পালে। কণমানি ছোৱালীজনী আৰু সেই বাইদেৱে বাস কৰা ডাঙৰ আৰু ব্যস্ত নগৰখনক পিছলৈ মানুহবোৰে- সাধু-নগৰী বুলি ক'বলৈ ধৰিলে। চহৰখনত বাস কৰা কোনো ব্যক্তিৰে সাধু কবলৈ সময় নাই। বাইদেউজনী আৰু কণমানি ছোৱালীজনীয়ে সাধুৰ এক নতুন পৰিবেশৰ সূচনা কৰিলে। এখন নগৰ কেনেকৈ সাধুনগৰীলৈ পৰিবৰ্তন ঘটিল জানিবৰ বাবে কিতাপখন পঢ়ক।",
         'foo.txt': "Hello, World!",
         'bar.txt': "Wellcome to the bar",
         "terminal": {
@@ -77,6 +78,9 @@ var commands = {
     },
     alexa: function () {
         this.echo(foaas());
+    },
+    gender: function () {
+        this.echo(gender(name1));
     },
     whatsmyip : function () {
         this.echo(whatsmyIP());
@@ -204,6 +208,10 @@ $('body').terminal(
     whatsmyip : function () {
         this.echo(whatsmyIP());
     },
+    gender : function () {
+        this.echo(gender());
+    },
+
     cd: function(dir) {
         this.pause();
         if (dir === '/') {
@@ -378,3 +386,21 @@ function speakText(text) {
     return "";
 }
 
+
+async function gender(name1) {
+    console.log(name1);
+    let url = "https://api.genderize.io/?name=" + name1;
+    let response = await fetch(url);
+    console.log(response);
+    let data = await response.text();
+    console.log(data);
+    parsed_response = JSON.parse(data);
+    console.log(parsed_response);
+    
+    let gender_name = parsed_response.name;
+    let gender_id = parsed_response.gender;
+    let probability = parsed_response.probability;
+    return gender_name +"\n"+gender_id+"\n"+probability;
+    
+
+}
