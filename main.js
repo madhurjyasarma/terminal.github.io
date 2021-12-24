@@ -44,6 +44,7 @@ function restore_cwd(fs, path) {
     while (path.length) {
         var dir_name = path.shift();
         if (!is_dir(fs[dir_name])) {
+            playAudio()
             throw new Error('Internal Error Invalid directory ' +
                             $.terminal.escape_brackets(dir_name));
         }
@@ -82,7 +83,6 @@ var commands = {
         this.echo(phoneAPI(phoneNumber));
     },
     alexa: function () {
-        playAudio()
         this.echo(foaas());
     },
     gender: function () {
@@ -118,6 +118,7 @@ var commands = {
     },
     ls: function() {
         if (!is_dir(cwd)) {
+            playAudio()
             throw new Error('Internal Error Invalid directory');
         }
         var dir = Object.keys(cwd).map(function(key) {
