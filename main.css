@@ -20,6 +20,10 @@ body {
 #term {
     height: 100vh;
 }
+.cmd-prompt {
+  font-weight:bold;  
+}
+
 :root {
     --background: #062c1a;
 }
@@ -117,7 +121,7 @@ body {
 }
 /* glow */
 .terminal {
-    text-shadow: 0 0.2rem 1rem #0c7b12;
+    text-shadow: 0 0.2rem 1rem #74a077;
 }
 /* based on
 https://blog.carbonfive.com/2015/01/07/vintage-terminal-effect-in-css3/

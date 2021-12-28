@@ -15,12 +15,17 @@ const HELP =
     +"phone <country code><phone number>:: to get details of your number\n"
     +"alexa                             :: chat with alexa\n"
     +"whatsmyip                         :: to get details of your ip\n"
+    +"gender                            :: to know your gender\n"
+    +"ls, cd, cat                       :: directory access\n"
+
+
+var term;
 
 // Fake in memory filesystem
 var fs = {
     'projects': {
         'baz.txt': 'Hello this is file baz.txt',
-        'quake.txt': "Cras sit amet semper arcu. Donec est nunc, dapibus non scelerisque quis, pellentesque at justo. Nunc nec vehicula ante, at dapibus orci. In ultricies rutrum ante, dictum placerat lorem faucibus vitae. Aliquam porttitor at mauris id semper. Integer rutrum sem id nunc congue congue. Etiam dignissim diam in dui ultrices, a venenatis velit ultricies. Maecenas ac ultrices mi. Nunc molestie sapien vitae massa vulputate iaculis. Phasellus vehicula laoreet mi, vel bibendum nisl laoreet sit amet. Fusce sit amet rutrum lacus.",
+        'assamese.txt': " গোটেই নগৰখনৰ মানুহে এতিয়াৰ পৰাহে যেন শান্তিৰে উশাহ ল'লে। সেই দিনাখনৰ পৰা ডাঙৰ নগৰখনৰ মানুহবোৰক প্ৰতি ৰাতিপুৱা এটাকৈহে সাধু কোৱা হ'ল। নিশা মানুহবোৰে শুবলৈ যোৱাৰ আগত এটাকৈহে সাধু শুনিবলৈ পালে। কণমানি ছোৱালীজনী আৰু সেই বাইদেৱে বাস কৰা ডাঙৰ আৰু ব্যস্ত নগৰখনক পিছলৈ মানুহবোৰে- সাধু-নগৰী বুলি ক'বলৈ ধৰিলে। চহৰখনত বাস কৰা কোনো ব্যক্তিৰে সাধু কবলৈ সময় নাই। বাইদেউজনী আৰু কণমানি ছোৱালীজনীয়ে সাধুৰ এক নতুন পৰিবেশৰ সূচনা কৰিলে। এখন নগৰ কেনেকৈ সাধুনগৰীলৈ পৰিবৰ্তন ঘটিল জানিবৰ বাবে কিতাপখন পঢ়ক।",
         'foo.txt': "Hello, World!",
         'bar.txt': "Wellcome to the bar",
         "terminal": {
@@ -39,6 +44,7 @@ function restore_cwd(fs, path) {
     while (path.length) {
         var dir_name = path.shift();
         if (!is_dir(fs[dir_name])) {
+            playAudio()
             throw new Error('Internal Error Invalid directory ' +
                             $.terminal.escape_brackets(dir_name));
         }
@@ -61,6 +67,7 @@ var commands = {
         this.echo('MVDZO X AVIN');
     },
     help: function () {
+        playAudio();
         this.echo(showHelp());
     },
     hie: function (name) {
@@ -77,6 +84,9 @@ var commands = {
     },
     alexa: function () {
         this.echo(foaas());
+    },
+    gender: function () {
+        this.echo(gender(name1));
     },
     whatsmyip : function () {
         this.echo(whatsmyIP());
@@ -108,6 +118,7 @@ var commands = {
     },
     ls: function() {
         if (!is_dir(cwd)) {
+            playAudio()
             throw new Error('Internal Error Invalid directory');
         }
         var dir = Object.keys(cwd).map(function(key) {
@@ -124,8 +135,25 @@ var commands = {
         } else {
             this.echo(cwd[file]);
         }
-    } 
+    }
 };
+
+function playAudio() {
+    console.log("playing audio")
+    const audio_list = [
+                        "assets/1772817.mp3",
+                        "assets/2806608.mp3",
+                        "assets/3322341.mp3",
+                        "assets/5643712.mp3",
+                        "assets/6796298.mp3"
+                    ]
+    var random_audio = audio_list[Math.floor(Math.random()*audio_list.length)];
+    var audio = new Audio(random_audio);
+    console.log("playing audio :: "+random_audio)
+    audio.play();
+}
+
+
 function completion(string, callback) {
     var command = this.get_command();
     var cmd = $.terminal.parse_command(command);
@@ -169,95 +197,24 @@ function completion(string, callback) {
 }
 
 
-
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-$('body').terminal(
-{
-    iam: function (name) {
-        this.echo('Hello, ' + name +
-            '. Welcome to TERMINAL UI.');
-    },
-    developer: function () {
-        this.echo('MVDZO X AVIN');
-    },
-    help: function () {
-        this.echo(showHelp());
-    },
-    hie: function (name) {
-        this.echo(saysomething(name));
-    },
-    advice: function () {
-        this.echo(fetchAdviceAPI());
-    },    
-    weather: function (city_name) {
-        this.echo(weatherAPI(city_name));
-    },
-    phone: function (phoneNumber) {
-        this.echo(phoneAPI(phoneNumber));
-    },
-    alexa: function () {
-        this.echo(foaas());
-    },
-    whatsmyip : function () {
-        this.echo(whatsmyIP());
-    },
-    cd: function(dir) {
-        this.pause();
-        if (dir === '/') {
-            path = [];
-            cwd = restore_cwd(fs, path);
-        } else if (dir === '..') {
-            if (path.length) {
-                path.pop(); // remove from end
-                cwd = restore_cwd(fs, path);
-            }
-        } else if (dir.match(/\//)) {
-            var p = dir.replace(/\/$/, '').split('/').filter(Boolean);
-            if (dir[0] !== '/') {
-                p = path.concat(p);
-            }
-            cwd = restore_cwd(fs, p);
-            path = p;
-        } else if (!is_dir(cwd[dir])) {
-            this.error($.terminal.escape_brackets(dir) + ' is not a directory');
-        } else {
-            cwd = cwd[dir];
-            path.push(dir);
-        }
-        this.resume();
-    },
-    ls: function() {
-        if (!is_dir(cwd)) {
-            throw new Error('Internal Error Invalid directory');
-        }
-        var dir = Object.keys(cwd).map(function(key) {
-            if (is_dir(cwd[key])) {
-                return key + '/';
-            }
-            return key;
-        });
-        this.echo(dir.join('\n'));
-    },
-    cat: function(file) {
-        if (!is_file(cwd[file])) {
-            this.error($.terminal.escape_brackets(file) + " don't exists");
-        } else {
-            this.echo(cwd[file]);
-        }
-    }
-},
-{
+$('body').terminal(commands,
+    {
     completion: completion,
     name: 'Terminal Jarvis v0.1',
-    prompt: 'user@jarvis-v1.0: ',
+    prompt: prompt(),
     greetings: 'Terminal Jarvis v0.1 - :: Type \'help\' to show options\n'+ASCII_TEXT+showHelp(),
-});
+    exceptionHandler: exceptionHandlerFn()
+    }
+);
 
 function showHelp() {
     return HELP;
+}
+
+function exceptionHandlerFn() {
+    console.log("Something went wrong")
 }
 
 function saysomething(name) {
@@ -378,3 +335,26 @@ function speakText(text) {
     return "";
 }
 
+
+async function gender(name) {
+    let url = "https://api.genderize.io/?name="+name;
+    let response = await fetch(url);
+    let data = await response.text();
+    parsed_response = JSON.parse(data);  
+    let gender_name = parsed_response.name;
+    let gender_id = parsed_response.gender;
+    let probability = parsed_response.probability;
+    if(gender_id === null) {
+        return "We dont have any record for this name"
+    }
+    return gender_name +" is a "+gender_id+" name with "+probability*100+"% probaility";   
+}
+
+function prompt() {
+    return function(callback) {
+        var prompt;
+        prompt = 'user@host:~' + path.join('/') + '$ ';
+        $('.title').html(prompt);
+        callback(prompt);
+    };
+}
