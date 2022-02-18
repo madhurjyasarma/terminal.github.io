@@ -1,1 +1,1 @@
-# terminal.github.io
+# abhinov-gogoi.github.io/terminalUI
